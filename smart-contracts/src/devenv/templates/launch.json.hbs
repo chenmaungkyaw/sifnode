@@ -42,6 +42,8 @@
       "envFile": "${workspaceFolder}/smart-contracts/.env",
       "env": {
         {{!-- we cant use @index directly to access array --}}
+        {{!-- TODO Here we use 'accounts.available', but for running we use accounts.validators[0]. Which one is correct? --}}
+        {{!-- TODO We're not passing ETHEREUM_ADDRESS here, but we do it when running. Which one is correct? --}}
         {{#with (lookup @root.Dev.ethResults.accounts.available @index)}}
         "ETHEREUM_PRIVATE_KEY": "{{subString privateKey 2}}"
         {{/with}}
@@ -83,10 +85,13 @@
       "envFile": "${workspaceFolder}/smart-contracts/.env",
       "env": {
         {{!-- we cant use @index directly to access array --}}
+        {{!-- TODO Here we use 'accounts.available', but for running we use accounts.validators[0]. Which one is correct? --}}
+        {{!-- TODO We're not passing ETHEREUM_ADDRESS here, but we do it when running. Which one is correct? --}}
         {{#with (lookup @root.Dev.ethResults.accounts.available @index)}}
         "ETHEREUM_PRIVATE_KEY": "{{subString privateKey 2}}"
         {{/with}}
       },
+      {{!-- TODO We don't use switch names "--network-descriptor", "--tendermint-node" etc. here, but we use them for running the processes. Which one is correct? --}}
       "args": [
         "init-witness",
         // TODO Probably need --network-descriptor etc.

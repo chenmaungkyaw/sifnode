@@ -125,7 +125,7 @@ async function main() {
       // hardhat.results.chainId
       31337
     )
-    return
+    console.log("hardhat results:", JSON.stringify(hardhat.results))
     EnvJSONWriter({
       contractResults: smartcontract.result,
       ethResults: hardhat.results,
