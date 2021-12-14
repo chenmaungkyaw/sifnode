@@ -9,9 +9,9 @@ import {
 import { DeploymentName, HardhatRuntimeEnvironmentToken } from "../src/tsyringe/injectionTokens"
 import { setupRopstenDeployment, setupSifchainMainnetDeployment } from "../src/hardhatFunctions"
 import {
-  BridgeBankProxy,
   BridgeRegistryProxy,
   BridgeTokenSetup,
+  BridgeBankProxy,
   CosmosBridgeProxy,
   RowanContract,
   SifchainContractFactories,
@@ -28,12 +28,18 @@ export type DeployedContractAddresses = {
 // npx hardhat run scripts/deploy_contracts.ts
 
 async function main() {
+  console.log("point1")
   container.register(HardhatRuntimeEnvironmentToken, { useValue: hardhat })
   await container.resolve(BridgeTokenSetup).complete
+  console.log("point2")
   const bridgeBank = await container.resolve(BridgeBankProxy).contract
+  console.log("point3")
   const bridgeRegistry = await container.resolve(BridgeRegistryProxy).contract
+  console.log("point1")
   const rowanContract = await container.resolve(RowanContract).contract
+  console.log("point1")
   const cosmosBridge = await container.resolve(CosmosBridgeProxy).contract
+  console.log("cosmosBridge done")
   const result: DeployedContractAddresses = {
     cosmosBridge: cosmosBridge.address,
     bridgeBank: bridgeBank.address,

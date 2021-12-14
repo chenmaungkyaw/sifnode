@@ -15,6 +15,7 @@ import {
   CosmosBridge__factory,
 } from "../../build"
 import "@openzeppelin/hardhat-upgrades"
+import { container } from "tsyringe"
 
 import web3 from "web3"
 const MINTER_ROLE = web3.utils.soliditySha3("MINTER_ROLE")
@@ -74,7 +75,9 @@ export class CosmosBridgeProxy {
   constructor(
     @inject(HardhatRuntimeEnvironmentToken) hardhatRuntimeEnvironment: HardhatRuntimeEnvironment,
     sifchainContractFactories: SifchainContractFactories,
-    cosmosBridgeArgumentsPromise: CosmosBridgeArgumentsPromise
+    cosmosBridgeArgumentsPromise: CosmosBridgeArgumentsPromise,
+    // bridgeBankProxy: BridgeBankProxy,
+    sifchainAccountsPromise: SifchainAccountsPromise
   ) {
     this.contract = sifchainContractFactories.cosmosBridge.then(async (cosmosBridgeFactory) => {
       const args = await cosmosBridgeArgumentsPromise.cosmosBridgeArguments
@@ -83,7 +86,11 @@ export class CosmosBridgeProxy {
         args.asArray(),
         { initializer: "initialize(address,uint256,address[],uint256[],int32)" }
       )
-      await cosmosBridgeProxy.deployed()
+      const cosmosBridge = await cosmosBridgeProxy.deployed()
+      const accounts = await sifchainAccountsPromise.accounts
+      const bridgeBankProxy = container.resolve(BridgeBankProxy)
+      const bridgeBank = await bridgeBankProxy.contract
+      await cosmosBridge.connect(accounts.operatorAccount).setBridgeBank(bridgeBank.address)
       return cosmosBridgeProxy
     })
   }
